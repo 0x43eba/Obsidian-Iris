@@ -29,18 +29,36 @@ export default class MyPlugin extends Plugin {
 			this.app.vault.on("create", async (file) => {
 				const heading = this.settings.header;
 				if (file.path.includes(this._dailyNoteLocation)) {
+
+					// Parse Date from active file
 					const thisFileDate = this.parseDate(file.name);
+
+					// Create the array of time deltas
 					let outcome = this._files
 						.map((existingFile) => thisFileDate - this.parseDate(existingFile.name))
+
+					// Get the minimum timedelta, then file
 					const min = outcome.reduce((min, val) => (min > val) ? min : val);
 					const preceeding = this._files[outcome.indexOf(min)];
+
+					// Read previous file
 					const textPrevious = await this.app.vault.read(preceeding);
+
+					// Read this file
 					let text = await this.app.vault.read(this.app.workspace.getActiveFile());
+
+					// Search for headding
 					const unfinishedTodosRegex = /- \[ \].*/g
 					const unfinishedTodos = Array.from(textPrevious.matchAll(unfinishedTodosRegex)).map((entry) => entry[0]);
+
+
 					console.log(`${heading}${unfinishedTodos.join('\n')}\n`);
+
+					// Replace the header
 					text = text.replace(heading, `${heading}\n${unfinishedTodos.join('\n')}`);
 					console.log(text);
+
+					// Write the file
 					await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
 				}
 			})
