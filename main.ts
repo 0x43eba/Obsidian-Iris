@@ -58,7 +58,7 @@ export default class MyPlugin extends Plugin {
 		this.addSettingTab(new IrisSettings(this.app, this));
 		await this.loadSettings();
 
-		this._dailyNoteLocation = "Notes/Daily Notes";
+		this._dailyNoteLocation = this.settings.location;
 		this.app.workspace.on("layout-ready", () => {
 			this.app.vault.on("create", async (file) => {
 				await this.updateFile(file);
