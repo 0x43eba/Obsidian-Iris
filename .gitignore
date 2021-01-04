@@ -1,7 +1,7 @@
 # Intellij
 *.iml
 .idea
-
+.github
 # npm
 node_modules
 package-lock.json
