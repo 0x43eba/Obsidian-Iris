@@ -34,11 +34,6 @@ export default class MyPlugin extends Plugin {
 			let target = Math.min(...outcomes);
 			// From here down is fine.
 			const preceeding = filteredFilers[outcomes.indexOf(target)];
-			console.log(filteredFilers);
-			console.log(outcomes);
-			console.log(target);
-
-			console.log(preceeding);
 
 			if (!preceeding) return false;
 
@@ -52,9 +47,6 @@ export default class MyPlugin extends Plugin {
 			const unfinishedTodosRegex = /- \[ \].*/g
 			const unfinishedTodos = Array.from(textPrevious.matchAll(unfinishedTodosRegex)).map((entry) => entry[0]);
 
-
-			console.log(`${heading}${unfinishedTodos.join('\n')}\n`);
-
 			// Replace the header
 			text = text.replace(heading, `${heading}\n${unfinishedTodos.join('\n')}`);
 			// Write the file
@@ -63,7 +55,6 @@ export default class MyPlugin extends Plugin {
 	}
 
 	async onload() {
-		console.log('IRIS!');
 		this.addSettingTab(new IrisSettings(this.app, this));
 		await this.loadSettings();
 
