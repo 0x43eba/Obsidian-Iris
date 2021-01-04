@@ -11,6 +11,8 @@ Make a folder inside Vault/.obsidian/plugins called Iris. Put the contents of Ir
 
 Once you have installed, and set it up, close Obsidian and then reopen the program to make it work.
 
+This plugin requires you to have a daily notes system set up, and to use the 'Create Daily Note' tool provided by Obsidian. Creating a note, then renaming it to the correct time format will not cause rollover.
+
 ### Filenames
 
 Iris uses the filename of your daily note as a way to determine which other note's TO DO list it will import. Because of this, the title has to be clearly formatted and look like this: `Sunday Jan 03, 2021`. This only affects filenames. Headings and other anchors are unaffected. Anyone who's coming from [obsidian-rollover-daily-todos](https://github.com/shichongrui/obsidian-rollover-daily-todos) doesn't have to make any changes and Iris is fully compatable with this plugin. I am looing into solutions to this restriction.
