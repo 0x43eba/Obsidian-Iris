@@ -1,4 +1,4 @@
-# ObsidianIris
+# Obsidian Iris
 
 Iris is a tool for rolling over your previous day's unfinished tasks. This is based on, but not a fork of [this](https://github.com/shichongrui/obsidian-rollover-daily-todos).
 
