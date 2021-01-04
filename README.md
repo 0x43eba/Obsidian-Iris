@@ -9,6 +9,8 @@ Here you should only select Iris.zip, the source files are not needed unless you
 
 Make a folder inside Vault/.obsidian/plugins called Iris. Put the contents of Iris.zip into that folder.
 
+Once you have installed, and set it up, close Obsidian and then reopen the program to make it work.
+
 ### Filenames
 
 Iris uses the filename of your daily note as a way to determine which other note's TO DO list it will import. Because of this, the title has to be clearly formatted and look like this: `Sunday Jan 03, 2021`. This only affects filenames. Headings and other anchors are unaffected. Anyone who's coming from [obsidian-rollover-daily-todos](https://github.com/shichongrui/obsidian-rollover-daily-todos) doesn't have to make any changes and Iris is fully compatable with this plugin. I am looing into solutions to this restriction.
