@@ -13,54 +13,64 @@ const DEFAULT_SETTINGS: IIrisSettings = {
 export default class MyPlugin extends Plugin {
 	settings: IIrisSettings;
 
-	private _files: Array<TFile>;
+	private _files: Array<TFile> = [];
 	private _dailyNoteLocation: string;
+
+	async updateFile(file: TAbstractFile) {
+		const heading = this.settings.header;
+		if (file.path.includes(this._dailyNoteLocation)) {
+
+			this._files = Array.from(this.app.vault.getFiles()).filter((entry) => entry.path.includes(this._dailyNoteLocation));
+			
+
+			// Parse Date from active file
+			const thisFileDate = this.parseDate(file.name);
+			let files = this._files.filter((entry) => entry.basename.localeCompare(file.name) != 0)
+
+			let filteredFilers = files
+				.filter((entry) => (this.parseDate(entry.name) < this.parseDate(file.name)))
+
+			let outcomes = filteredFilers.map((entry) => this.parseDate(file.name) - this.parseDate(entry.name));
+			let target = Math.min(...outcomes);
+			// From here down is fine.
+			const preceeding = filteredFilers[outcomes.indexOf(target)];
+			console.log(filteredFilers);
+			console.log(outcomes);
+			console.log(target);
+
+			console.log(preceeding);
+
+			if (!preceeding) return false;
+
+			// Read previous file
+			const textPrevious = await this.app.vault.read(preceeding);
+
+			// Read this file
+			let text = await this.app.vault.read(this.app.workspace.getActiveFile());
+
+			// Search for headding
+			const unfinishedTodosRegex = /- \[ \].*/g
+			const unfinishedTodos = Array.from(textPrevious.matchAll(unfinishedTodosRegex)).map((entry) => entry[0]);
+
+
+			console.log(`${heading}${unfinishedTodos.join('\n')}\n`);
+
+			// Replace the header
+			text = text.replace(heading, `${heading}\n${unfinishedTodos.join('\n')}`);
+			// Write the file
+			await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
+		}
+	}
 
 	async onload() {
 		console.log('IRIS!');
 		this.addSettingTab(new IrisSettings(this.app, this));
 		await this.loadSettings();
-		this._dailyNoteLocation = this.settings.location;
+
+		this._dailyNoteLocation = "Notes/Daily Notes";
 		this.app.workspace.on("layout-ready", () => {
-			this._files = Array.from(this.app.vault
-				.getFiles()
-				.filter((entry) => entry.path.includes(this._dailyNoteLocation)));
-			console.log(this._files);
 			this.app.vault.on("create", async (file) => {
-				const heading = this.settings.header;
-				if (file.path.includes(this._dailyNoteLocation)) {
-
-					// Parse Date from active file
-					const thisFileDate = this.parseDate(file.name);
-
-					// Create the array of time deltas
-					let outcome = this._files
-						.map((existingFile) => thisFileDate - this.parseDate(existingFile.name))
-
-					// Get the minimum timedelta, then file
-					const min = outcome.reduce((min, val) => (min > val) ? min : val);
-					const preceeding = this._files[outcome.indexOf(min)];
-
-					// Read previous file
-					const textPrevious = await this.app.vault.read(preceeding);
-
-					// Read this file
-					let text = await this.app.vault.read(this.app.workspace.getActiveFile());
-
-					// Search for headding
-					const unfinishedTodosRegex = /- \[ \].*/g
-					const unfinishedTodos = Array.from(textPrevious.matchAll(unfinishedTodosRegex)).map((entry) => entry[0]);
-
-
-					console.log(`${heading}${unfinishedTodos.join('\n')}\n`);
-
-					// Replace the header
-					text = text.replace(heading, `${heading}\n${unfinishedTodos.join('\n')}`);
-					console.log(text);
-
-					// Write the file
-					await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
-				}
+				await this.updateFile(file);
 			})
 		});
 	}
@@ -119,6 +129,6 @@ class IrisSettings extends PluginSettingTab {
 					this.notes = value;
 					await this.plugin.saveSettings();
 				}));
-			
+
 	}
 }
