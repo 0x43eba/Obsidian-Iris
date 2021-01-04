@@ -4,4 +4,4 @@ Iris is a tool for rolling over your previous day's unfinished tasks. This is ba
 
 ### To Install
 
-Download curent release. Use folder called Iris.zip. Unzip this and place the output into your .obsidian/plugins folder. Enable Iris in the settings.
+Download curent release, from the Releases section on the right hand side of the repository. Use folder called Iris.zip. Unzip this and place the output into your .obsidian/plugins folder. Enable Iris in the settings.
