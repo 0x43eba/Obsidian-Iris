@@ -17,9 +17,9 @@ Iris uses the filename of your daily note as a way to determine which other note
 
 ![Settings Window](https://i.imgur.com/9NCsLHy.png)
 
-To Do heading lets you set what anchor you have your TO DO list in. Anything in that anchor's section which starts with `- [ ]` will be imported if they are not marked as complete. 
+**To Do** heading lets you set what anchor you have your TO DO list in. Anything in that anchor's section which starts with `- [ ]` will be imported if they are not marked as complete. 
 
-Daily Notes Directory allows you to specify where your Daily Notes are kept. Anything in that directory must be formatted with the correct filename, mentioned above.
+**Daily Notes Directory** allows you to specify where your Daily Notes are kept. Anything in that directory must be formatted with the correct filename, mentioned above.
 
 ### Notes to Developers
 
