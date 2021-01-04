@@ -23,7 +23,7 @@ Iris uses the filename of your daily note as a way to determine which other note
 
 ### Notes to Developers
 
-The Javascript is generated from Typescript and I do not suggest editing that, instead alter the main.ts file in the source code for changes.
+If you would like to build from source, you can clone this directory, and run `npm install` within the repository. To run the TypeScript compiler in watch mode, run `npm run dev`
 
 ### Bug Reports and Feature Requests
 
