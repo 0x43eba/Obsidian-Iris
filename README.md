@@ -24,3 +24,7 @@ Iris uses the filename of your daily note as a way to determine which other note
 ### Notes to Developers
 
 The Javascript is generated from Typescript and I do not suggest editing that, instead alter the main.ts file in the source code for changes.
+
+### Bug Reports
+
+If you detect a bug in Iris, please open a new issue on this project. 
