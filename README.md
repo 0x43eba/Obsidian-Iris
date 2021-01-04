@@ -28,3 +28,7 @@ If you would like to build from source, you can clone this directory, and run `n
 ### Bug Reports and Feature Requests
 
 If you detect a bug in Iris, please open a new issue on this project. You may also open feature requests with issues, however implementation of feature requests is not guaranteed.
+
+### Upcomming inclusion in Community Plugins
+
+I am intending to submit this code to the Community Plugins project for Obsidian.md. This is being planned for soon.
