@@ -31,4 +31,4 @@ If you detect a bug in Iris, please open a new issue on this project. You may al
 
 ### Upcomming inclusion in Community Plugins
 
-I am intending to submit this code to the Community Plugins project for Obsidian.md. This is being planned for soon.
+I am intending to submit this code to the Community Plugins project for Obsidian.md. This is being planned for soon, with Version 2.0 being the first to be submitted.
