@@ -11,7 +11,7 @@ Make a folder inside Vault/.obsidian/plugins called Iris. Put the contents of Ir
 
 Once you have installed, and set it up, close Obsidian and then reopen the program to make it work.
 
-This plugin requires you to have a daily notes system set up, and to use the 'Create Daily Note' tool provided by Obsidian. Creating a note, then renaming it to the correct time format will not cause rollover.
+This plugin requires you to have a daily notes system set up using [this plugin](https://github.com/liamcain/obsidian-calendar-plugin). To create a new daily note select the calendar day that you would like to create a note for. Using the sidebar's Daily Notes button will not cause notes to roll over, thought this limitation will be removed in the future.
 
 ### Filenames
 
