@@ -17,7 +17,7 @@ This plugin requires you to have a daily notes system set up using [this plugin]
 
 ### Filenames
 
-Iris uses the filename of your daily note as a way to determine which other note's TO DO list it will import. Because of this, the title has to be clearly formatted and look like this: `Sunday Jan 03, 2021`. This only affects filenames. Headings and other anchors are unaffected. Anyone who's coming from [obsidian-rollover-daily-todos](https://github.com/shichongrui/obsidian-rollover-daily-todos) doesn't have to make any changes and Iris is fully compatable with this plugin. I am looing into solutions to this restriction.
+Iris uses the filename of your daily note as a way to determine which other note's TO DO list it will import. Because of this, the title has to be clearly formatted and look like this: `Sunday Jan 03, 2021`. This only affects filenames. Headings and other anchors are unaffected. Anyone who's coming from [obsidian-rollover-daily-todos](https://github.com/shichongrui/obsidian-rollover-daily-todos) doesn't have to make any changes and Iris is fully compatible with this plugin. I am looking into solutions to this restriction.
 
 ### Setting Up
 
@@ -35,6 +35,6 @@ If you would like to build from source, you can clone this directory, and run `n
 
 If you detect a bug in Iris, please open a new issue on this project. You may also open feature requests with issues, however implementation of feature requests is not guaranteed.
 
-### Upcomming inclusion in Community Plugins
+### Upcoming inclusion in Community Plugins
 
 Inclusion in Obsidian Community Plugins is planned for some time in the future, pending QA testing.
