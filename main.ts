@@ -10,53 +10,47 @@ const DEFAULT_SETTINGS: IIrisSettings = {
 	location: "Daily Notes"
 }
 
-export default class MyPlugin extends Plugin 
-{
+export default class MyPlugin extends Plugin {
 	settings: IIrisSettings;
 
-	private _files: Array<TFile> = [];
 	private _dailyNoteLocation: string;
+	private _header: string;
+	private async updateFile(file: TAbstractFile): Promise<void> {
+		
+		if (!file.path.includes(this._dailyNoteLocation)) return Promise.resolve();
 
-	async updateFile(file: TAbstractFile) {
-		const heading = this.settings.header;
-		if (file.path.includes(this._dailyNoteLocation)) {
+		const filteredFilers: Array<TFile> = Array.from(this.app.vault.getFiles())
+			.filter((entry) => entry.path.includes(this._dailyNoteLocation))
+			.filter((entry) => entry.basename.localeCompare(file.name) != 0)
+			.filter((entry) => (this.parseDate(entry.name) < this.parseDate(file.name)))
 
-			this._files = Array.from(this.app.vault.getFiles()).filter((entry) => entry.path.includes(this._dailyNoteLocation));
 
-			let files = this._files.filter((entry) => entry.basename.localeCompare(file.name) != 0)
+		const outcomes: Array<number> = filteredFilers
+			.map((entry) => this.parseDate(file.name) - this.parseDate(entry.name));
 
-			let filteredFilers = files
-				.filter((entry) => (this.parseDate(entry.name) < this.parseDate(file.name)))
 
-			let outcomes = filteredFilers.map((entry) => this.parseDate(file.name) - this.parseDate(entry.name));
-			let target = Math.min(...outcomes);
-			// From here down is fine.
-			const preceeding = filteredFilers[outcomes.indexOf(target)];
+		const preceeding: TFile = filteredFilers[outcomes.indexOf(Math.min(...outcomes))];
 
-			if (!preceeding) return false;
+		if (!preceeding) return;
 
-			// Read previous file
-			const textPrevious = await this.app.vault.read(preceeding);
+		const textPrevious: string = await this.app.vault.read(preceeding);
+		let text: string = await this.app.vault.read(this.app.workspace.getActiveFile());
 
-			// Read this file
-			let text = await this.app.vault.read(this.app.workspace.getActiveFile());
-			// Replace the header
-			text = text.replace(heading, `${heading}\n${this.findMatches(textPrevious)}`);
-			// Write the file
-			await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
-		}
+		text = text.replace(this._header, `${this._header}\n${this.findMatches(textPrevious)}`);
+
+		await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
+
 	}
 
-	findMatches(text: string): string
-	{
-		const unfinishedTodosRegex = /- \[ \].*/g
+	private findMatches(text: string): string {
+		const unfinishedTodosRegex: RegExp = /- \[ \].*/g;
 		const listedText: Array<string> = Array.from(text.split("\n"));
 		let taskLines: Array<string> = [];
 		let hasSeenHeadder: boolean = false;
 
 		for (let x of listedText) {
-			if (x.includes("#")){
-				if (x.includes(this.settings.header)){
+			if (x.includes("#")) {
+				if (x.includes(this.settings.header)) {
 					hasSeenHeadder = true;
 					continue;
 				} else if (!hasSeenHeadder) continue;
@@ -67,11 +61,10 @@ export default class MyPlugin extends Plugin
 		return taskLines.join('\n')
 	}
 
-	async onload() 
-	{
+	public async onload(): Promise<void> {
 		this.addSettingTab(new IrisSettings(this.app, this));
 		await this.loadSettings();
-
+		this._header = this.settings.header;
 		this._dailyNoteLocation = this.settings.location;
 		this.app.workspace.on("layout-ready", () => {
 			this.app.vault.on("create", async (file) => {
@@ -80,18 +73,15 @@ export default class MyPlugin extends Plugin
 		});
 	}
 
-	parseDate(name: string) 
-	{
+	private parseDate(name: string): number {
 		return (new Date(name.replace(".md", ""))).getTime()
 	}
 
-	async loadSettings() 
-	{
+	public async loadSettings(): Promise<void> {
 		this.settings = Object.assign(DEFAULT_SETTINGS, await this.loadData());
 	}
 
-	async saveSettings() 
-	{
+	public async saveSettings(): Promise<void> {
 		await this.saveData(this.settings);
 	}
 }
@@ -108,7 +98,7 @@ class IrisSettings extends PluginSettingTab {
 		this.tasks = "";
 	}
 
-	display(): void {
+	public display(): void {
 		let { containerEl } = this;
 
 		containerEl.empty();
@@ -126,6 +116,7 @@ class IrisSettings extends PluginSettingTab {
 					this.tasks = value;
 					await this.plugin.saveSettings();
 				}));
+
 		new Setting(containerEl)
 			.setName('Daily Note Directory')
 			.setDesc('Enter the directory you keep your Daily Notes in.')
