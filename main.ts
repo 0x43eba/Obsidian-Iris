@@ -1,4 +1,4 @@
-import { App, Modal, Plugin, PluginSettingTab, Setting, TAbstractFile, TFile } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, TAbstractFile, TFile } from 'obsidian';
 
 interface IIrisSettings {
 	header: string;
@@ -6,17 +6,18 @@ interface IIrisSettings {
 }
 
 const DEFAULT_SETTINGS: IIrisSettings = {
-	header: '### Tasks',
+	header: '### _tasks',
 	location: "Daily Notes"
 }
 
 export default class MyPlugin extends Plugin {
-	settings: IIrisSettings;
 
+	public settings: IIrisSettings;
 	private _dailyNoteLocation: string;
 	private _header: string;
+
 	private async updateFile(file: TAbstractFile): Promise<void> {
-		
+
 		if (!file.path.includes(this._dailyNoteLocation)) return Promise.resolve();
 
 		const filteredFilers: Array<TFile> = Array.from(this.app.vault.getFiles())
@@ -61,6 +62,10 @@ export default class MyPlugin extends Plugin {
 		return taskLines.join('\n')
 	}
 
+	private parseDate(name: string): number {
+		return (new Date(name.replace(".md", ""))).getTime()
+	}
+
 	public async onload(): Promise<void> {
 		this.addSettingTab(new IrisSettings(this.app, this));
 		await this.loadSettings();
@@ -73,10 +78,6 @@ export default class MyPlugin extends Plugin {
 		});
 	}
 
-	private parseDate(name: string): number {
-		return (new Date(name.replace(".md", ""))).getTime()
-	}
-
 	public async loadSettings(): Promise<void> {
 		this.settings = Object.assign(DEFAULT_SETTINGS, await this.loadData());
 	}
@@ -87,25 +88,31 @@ export default class MyPlugin extends Plugin {
 }
 
 class IrisSettings extends PluginSettingTab {
-	plugin: MyPlugin;
-	private notes: string;
-	private tasks: string;
+
+	public plugin: MyPlugin;
+	private _notes: string;
+	private _tasks: string;
 
 	constructor(app: App, plugin: MyPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
-		this.notes = "";
-		this.tasks = "";
+		this._notes = "";
+		this._tasks = "";
 	}
 
+	
 	public display(): void {
-		let { containerEl } = this;
 
-		containerEl.empty();
+		this.containerEl.empty();
+		this.addSettingsHeadding();
+		this.addHeaddingSettings();
+		this.addDailyNoteDirectorySettings();
+		
+	}
 
-		containerEl.createEl('h2', { text: 'Settings for Iris' });
+	private addHeaddingSettings() : void {
 
-		new Setting(containerEl)
+		new Setting(this.containerEl)
 			.setName('To Do Headding')
 			.setDesc('Enter the tag above your to-do list. (IE: ### To Do).')
 			.addText(text => text
@@ -113,11 +120,13 @@ class IrisSettings extends PluginSettingTab {
 				.setValue(this.plugin.settings.header ? this.plugin.settings.header : DEFAULT_SETTINGS.header)
 				.onChange(async (value) => {
 					this.plugin.settings.header = value;
-					this.tasks = value;
+					this._tasks = value;
 					await this.plugin.saveSettings();
 				}));
+	}
 
-		new Setting(containerEl)
+	private addDailyNoteDirectorySettings(): void {
+		new Setting(this.containerEl)
 			.setName('Daily Note Directory')
 			.setDesc('Enter the directory you keep your Daily Notes in.')
 			.addText(text => text
@@ -125,9 +134,12 @@ class IrisSettings extends PluginSettingTab {
 				.setValue(this.plugin.settings.location ? this.plugin.settings.location : DEFAULT_SETTINGS.location)
 				.onChange(async (value) => {
 					this.plugin.settings.location = value;
-					this.notes = value;
+					this._notes = value;
 					await this.plugin.saveSettings();
 				}));
+	}
 
+	private addSettingsHeadding(): void {
+		this.containerEl.createEl('h2', { text: 'Settings for Iris' });
 	}
 }
