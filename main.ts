@@ -21,7 +21,7 @@ export default class MyPlugin extends Plugin {
 		if (file.path.includes(this._dailyNoteLocation)) {
 
 			this._files = Array.from(this.app.vault.getFiles()).filter((entry) => entry.path.includes(this._dailyNoteLocation));
-			
+
 
 			// Parse Date from active file
 			const thisFileDate = this.parseDate(file.name);
@@ -42,16 +42,22 @@ export default class MyPlugin extends Plugin {
 
 			// Read this file
 			let text = await this.app.vault.read(this.app.workspace.getActiveFile());
-
-			// Search for headding
-			const unfinishedTodosRegex = /- \[ \].*/g
-			const unfinishedTodos = Array.from(textPrevious.matchAll(unfinishedTodosRegex)).map((entry) => entry[0]);
-
 			// Replace the header
-			text = text.replace(heading, `${heading}\n${unfinishedTodos.join('\n')}`);
+			text = text.replace(heading, `${heading}\n${this.findMatches(textPrevious)}`);
 			// Write the file
 			await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
 		}
+	}
+
+	findMatches(text: string): string
+	{
+		const unfinishedTodosRegex = /- \[ \].*/g
+		const listedText: Array<string> = Array.from(text.split("\n"));
+		let taskLines: Array<string> = [];
+		for (let x of listedText) {
+			if (x.match(unfinishedTodosRegex)) taskLines.push(x);
+		}
+		return taskLines.join('\n')
 	}
 
 	async onload() {
