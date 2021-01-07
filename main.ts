@@ -54,6 +54,7 @@ export default class MyPlugin extends Plugin
 
 		for (let x of listedText) {
 			if (x.includes("#")){
+				console.log("Hashtagged");
 				if (x.includes(this.settings.header)){
 					hasSeenHeadder = true;
 					continue;
