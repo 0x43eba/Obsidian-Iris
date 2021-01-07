@@ -22,9 +22,6 @@ export default class MyPlugin extends Plugin {
 
 			this._files = Array.from(this.app.vault.getFiles()).filter((entry) => entry.path.includes(this._dailyNoteLocation));
 
-
-			// Parse Date from active file
-			const thisFileDate = this.parseDate(file.name);
 			let files = this._files.filter((entry) => entry.basename.localeCompare(file.name) != 0)
 
 			let filteredFilers = files
@@ -55,6 +52,7 @@ export default class MyPlugin extends Plugin {
 		const listedText: Array<string> = Array.from(text.split("\n"));
 		let taskLines: Array<string> = [];
 		for (let x of listedText) {
+
 			if (x.match(unfinishedTodosRegex)) taskLines.push(x);
 		}
 		return taskLines.join('\n')
