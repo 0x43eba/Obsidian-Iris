@@ -20,27 +20,22 @@ export default class MyPlugin extends Plugin
 	async updateFile(file: TAbstractFile) {
 		const heading = this.settings.header;
 		if (file.path.includes(this._dailyNoteLocation)) {
+			let documentTextPromise: Promise<string> = this.app.vault.read(this.app.workspace.getActiveFile());
+			this._files = Array.from(this.app.vault.getFiles())
+				.filter((entry) => entry.path.includes(this._dailyNoteLocation));
 
-			this._files = Array.from(this.app.vault.getFiles()).filter((entry) => entry.path.includes(this._dailyNoteLocation));
-
-			let files = this._files.filter((entry) => entry.basename.localeCompare(file.name) != 0)
+			let files = this._files
+				.filter((entry) => entry.basename.localeCompare(file.name) != 0)
 
 			let filteredFilers = files
 				.filter((entry) => (this.parseDate(entry.name) < this.parseDate(file.name)))
 
 			let outcomes = filteredFilers.map((entry) => this.parseDate(file.name) - this.parseDate(entry.name));
 			let target = Math.min(...outcomes);
-			// From here down is fine.
 			const preceeding = filteredFilers[outcomes.indexOf(target)];
-
 			if (!preceeding) return false;
-
-			// Read previous file
 			const textPrevious = await this.app.vault.read(preceeding);
-
-			// Read this file
-			let text = await this.app.vault.read(this.app.workspace.getActiveFile());
-			// Replace the header
+			let text: string = await documentTextPromise;
 			text = text.replace(heading, `${heading}\n${this.findMatches(textPrevious)}`);
 			// Write the file
 			await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
