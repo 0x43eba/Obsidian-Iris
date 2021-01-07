@@ -10,52 +10,47 @@ const DEFAULT_SETTINGS: IIrisSettings = {
 	location: "Daily Notes"
 }
 
-export default class MyPlugin extends Plugin 
-{
+export default class MyPlugin extends Plugin {
 	settings: IIrisSettings;
 
 	private _dailyNoteLocation: string;
+	private _header: string;
+	private async updateFile(file: TAbstractFile): Promise<void> {
+		
+		if (!file.path.includes(this._dailyNoteLocation)) return Promise.resolve();
 
-	private async updateFile(file: TAbstractFile) : Promise<void>
-	{
-		const heading = this.settings.header;
-		if (file.path.includes(this._dailyNoteLocation)) {
-
-			const documentTextPromise: Promise<string> = this.app.vault.read(this.app.workspace.getActiveFile());
-			
-			const filteredFilers: Array<TFile> = Array.from(this.app.vault.getFiles())
-				.filter((entry) => entry.path.includes(this._dailyNoteLocation))
-				.filter((entry) => entry.basename.localeCompare(file.name) != 0)
-				.filter((entry) => (this.parseDate(entry.name) < this.parseDate(file.name)))
+		const filteredFilers: Array<TFile> = Array.from(this.app.vault.getFiles())
+			.filter((entry) => entry.path.includes(this._dailyNoteLocation))
+			.filter((entry) => entry.basename.localeCompare(file.name) != 0)
+			.filter((entry) => (this.parseDate(entry.name) < this.parseDate(file.name)))
 
 
-			const outcomes: Array<number> = filteredFilers
-				.map((entry) => this.parseDate(file.name) - this.parseDate(entry.name));
+		const outcomes: Array<number> = filteredFilers
+			.map((entry) => this.parseDate(file.name) - this.parseDate(entry.name));
 
-			const preceeding: TFile = filteredFilers[outcomes.indexOf(Math.min(...outcomes))];
 
-			if (!preceeding) return;
+		const preceeding: TFile = filteredFilers[outcomes.indexOf(Math.min(...outcomes))];
 
-			const textPrevious: string = await this.app.vault.read(preceeding);
+		if (!preceeding) return;
 
-			let text: string = await documentTextPromise;
-			text = text.replace(heading, `${heading}\n${this.findMatches(textPrevious)}`);
+		const textPrevious: string = await this.app.vault.read(preceeding);
+		let text: string = await this.app.vault.read(this.app.workspace.getActiveFile());
 
-			await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
-		}
+		text = text.replace(this._header, `${this._header}\n${this.findMatches(textPrevious)}`);
+
+		await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
+
 	}
 
-	private findMatches(text: string): string
-	{
-		const unfinishedTodosRegex: RegExp = /- \[ \].*/g
+	private findMatches(text: string): string {
+		const unfinishedTodosRegex: RegExp = /- \[ \].*/g;
 		const listedText: Array<string> = Array.from(text.split("\n"));
 		let taskLines: Array<string> = [];
 		let hasSeenHeadder: boolean = false;
 
 		for (let x of listedText) {
-			if (x.includes("#")){
-				console.log("Hashtagged");
-				if (x.includes(this.settings.header)){
+			if (x.includes("#")) {
+				if (x.includes(this.settings.header)) {
 					hasSeenHeadder = true;
 					continue;
 				} else if (!hasSeenHeadder) continue;
@@ -66,11 +61,10 @@ export default class MyPlugin extends Plugin
 		return taskLines.join('\n')
 	}
 
-	public async onload(): Promise<void>
-	{
+	public async onload(): Promise<void> {
 		this.addSettingTab(new IrisSettings(this.app, this));
 		await this.loadSettings();
-
+		this._header = this.settings.header;
 		this._dailyNoteLocation = this.settings.location;
 		this.app.workspace.on("layout-ready", () => {
 			this.app.vault.on("create", async (file) => {
@@ -79,18 +73,15 @@ export default class MyPlugin extends Plugin
 		});
 	}
 
-	private parseDate(name: string) : number
-	{
+	private parseDate(name: string): number {
 		return (new Date(name.replace(".md", ""))).getTime()
 	}
 
-	public async loadSettings(): Promise<void>
-	{
+	public async loadSettings(): Promise<void> {
 		this.settings = Object.assign(DEFAULT_SETTINGS, await this.loadData());
 	}
 
-	public async saveSettings(): Promise<void>
-	{
+	public async saveSettings(): Promise<void> {
 		await this.saveData(this.settings);
 	}
 }
@@ -107,8 +98,7 @@ class IrisSettings extends PluginSettingTab {
 		this.tasks = "";
 	}
 
-	public display(): void 
-	{
+	public display(): void {
 		let { containerEl } = this;
 
 		containerEl.empty();
