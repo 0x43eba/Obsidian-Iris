@@ -14,30 +14,31 @@ export default class MyPlugin extends Plugin
 {
 	settings: IIrisSettings;
 
-	private _files: Array<TFile> = [];
 	private _dailyNoteLocation: string;
 
-	async updateFile(file: TAbstractFile) {
+	async updateFile(file: TAbstractFile) 
+	{
 		const heading = this.settings.header;
 		if (file.path.includes(this._dailyNoteLocation)) {
+
 			let documentTextPromise: Promise<string> = this.app.vault.read(this.app.workspace.getActiveFile());
-			this._files = Array.from(this.app.vault.getFiles())
-				.filter((entry) => entry.path.includes(this._dailyNoteLocation));
-
-			let files = this._files
+			
+			let filteredFilers = Array.from(this.app.vault.getFiles())
+				.filter((entry) => entry.path.includes(this._dailyNoteLocation))
 				.filter((entry) => entry.basename.localeCompare(file.name) != 0)
-
-			let filteredFilers = files
 				.filter((entry) => (this.parseDate(entry.name) < this.parseDate(file.name)))
 
-			let outcomes = filteredFilers.map((entry) => this.parseDate(file.name) - this.parseDate(entry.name));
-			let target = Math.min(...outcomes);
-			const preceeding = filteredFilers[outcomes.indexOf(target)];
-			if (!preceeding) return false;
+
+			let outcomes = filteredFilers
+				.map((entry) => this.parseDate(file.name) - this.parseDate(entry.name));
+			const preceeding = filteredFilers[outcomes.indexOf(Math.min(...outcomes))];
+
+			if (!preceeding) return;
+
 			const textPrevious = await this.app.vault.read(preceeding);
 			let text: string = await documentTextPromise;
+
 			text = text.replace(heading, `${heading}\n${this.findMatches(textPrevious)}`);
-			// Write the file
 			await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
 		}
 	}
