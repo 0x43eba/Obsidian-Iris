@@ -1,5 +1,10 @@
 # Obsidian Iris
 
+### Version 1.1.0
+
+- Includes support for nested to do items.
+- Fixed issue with unwanted to do items being transfered. 
+
 Iris is a tool for rolling over your previous day's unfinished tasks. This is based on, but not a fork of [this](https://github.com/shichongrui/obsidian-rollover-daily-todos), and is designed to work with [this plugin](https://github.com/liamcain/obsidian-calendar-plugin) for managing Daily Notes and Calendar items. 
 
 ![](https://github.com/OliverAndrews/Obsidian-Iris/blob/master/Screen%20Recording%202021-01-04%20at%202.12.55%20PM.gif)
