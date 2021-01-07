@@ -10,7 +10,8 @@ const DEFAULT_SETTINGS: IIrisSettings = {
 	location: "Daily Notes"
 }
 
-export default class MyPlugin extends Plugin {
+export default class MyPlugin extends Plugin 
+{
 	settings: IIrisSettings;
 
 	private _files: Array<TFile> = [];
@@ -51,14 +52,23 @@ export default class MyPlugin extends Plugin {
 		const unfinishedTodosRegex = /- \[ \].*/g
 		const listedText: Array<string> = Array.from(text.split("\n"));
 		let taskLines: Array<string> = [];
-		for (let x of listedText) {
+		let hasSeenHeadder: boolean = false;
 
+		for (let x of listedText) {
+			if (x.includes("#")){
+				if (x.includes(this.settings.header)){
+					hasSeenHeadder = true;
+					continue;
+				} else if (!hasSeenHeadder) continue;
+				break;
+			}
 			if (x.match(unfinishedTodosRegex)) taskLines.push(x);
 		}
 		return taskLines.join('\n')
 	}
 
-	async onload() {
+	async onload() 
+	{
 		this.addSettingTab(new IrisSettings(this.app, this));
 		await this.loadSettings();
 
@@ -70,15 +80,18 @@ export default class MyPlugin extends Plugin {
 		});
 	}
 
-	parseDate(name: string) {
+	parseDate(name: string) 
+	{
 		return (new Date(name.replace(".md", ""))).getTime()
 	}
 
-	async loadSettings() {
+	async loadSettings() 
+	{
 		this.settings = Object.assign(DEFAULT_SETTINGS, await this.loadData());
 	}
 
-	async saveSettings() {
+	async saveSettings() 
+	{
 		await this.saveData(this.settings);
 	}
 }
