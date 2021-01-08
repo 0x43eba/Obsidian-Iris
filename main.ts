@@ -23,7 +23,7 @@ export default class MyPlugin extends Plugin {
 		const filteredFilers: Array<TFile> = Array.from(this.app.vault.getFiles())
 			.filter((entry) => entry.path.includes(this._dailyNoteLocation))
 			.filter((entry) => entry.basename.localeCompare(file.name) != 0)
-			.filter((entry) => (this.parseDate(entry.name) < this.parseDate(file.name)))
+			.filter((entry) => (this.parseDate(entry.name) < this.parseDate(file.name)));
 
 
 		const outcomes: Array<number> = filteredFilers
@@ -36,7 +36,6 @@ export default class MyPlugin extends Plugin {
 
 		const textPrevious: string = await this.app.vault.read(preceeding);
 		let text: string = await this.app.vault.read(this.app.workspace.getActiveFile());
-
 		text = text.replace(this._header, `${this._header}\n${this.findMatches(textPrevious)}`);
 
 		await this.app.vault.modify(this.app.workspace.getActiveFile(), text);
