@@ -1,13 +1,13 @@
 import { IFetchableSequence } from "Iris/source/interfaces/IFetchableSequence";
-import { TFile, Vault } from "obsidian";
+import { TAbstractFile, TFile, Vault } from "obsidian";
 
-export class DailySequence implements IFetchableSequence<TFile> {
+export class DailySequence implements IFetchableSequence<TAbstractFile> {
 
     public Sequence: Array<TFile>;
     private _vault: Vault;
-    private _dailyNote: TFile;
+    private _dailyNote: TAbstractFile;
 
-    constructor(vault: Vault, dailyNote: TFile) {
+    constructor(vault: Vault, dailyNote: TAbstractFile) {
         this._vault = vault;
         this._dailyNote = dailyNote;
     }
