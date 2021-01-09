@@ -1,7 +1,7 @@
 import { IFetchableSequence } from "Iris/source/interfaces/IFetchableSequence";
 import { TAbstractFile, TFile, Vault } from "obsidian";
 
-export class DailySequence implements IFetchableSequence<TAbstractFile> {
+export class DailySequence implements IFetchableSequence<TFile> {
 
     public Sequence: Array<TFile>;
     private _vault: Vault;

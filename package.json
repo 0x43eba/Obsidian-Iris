@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup/rollup.config.js -w",
-    "doc": "typedoc Iris/source/main.ts --out docs/typedoc/",
+    "doc": "typedoc --options typedoc.json",
     "build": "rollup --config rollup/rollup.config.js",
     "build-prod": "rollup --config rollup/rollup.config.js && cp obsidian/*.* build/",
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'"

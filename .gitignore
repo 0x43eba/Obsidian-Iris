@@ -8,4 +8,5 @@ package-lock.json
 build
 # build
 main.js
+typedoc
 *.js.map

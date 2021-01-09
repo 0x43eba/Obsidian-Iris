@@ -1,5 +1,7 @@
-import { App, Plugin, PluginSettingTab, Setting, TAbstractFile, TFile } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, TAbstractFile, Tasks, TFile } from 'obsidian';
+import { NoteOperation } from './files/notes/operations/NoteOperation';
 import { DailySequence } from './files/sequences/DailySequence';
+import { IFetchableSequence } from './interfaces/IFetchableSequence';
 import { INoteOperation } from './interfaces/INoteOperation'
 
 interface IIrisSettings {
@@ -18,6 +20,7 @@ export default class MyPlugin extends Plugin {
 	private _dailyNoteLocation: string;
 	private _weeklyNoteLocation: string;
 	private _coLocated: boolean;
+	private _heading: string; // Clean this up
 
 	public async onload(): Promise<void> {
 		this.addSettingTab(new IrisSettings(this.app, this));
@@ -29,33 +32,51 @@ export default class MyPlugin extends Plugin {
 	private registerFileListner() {
 		this.app.workspace.on("layout-ready", () => {
 			this.app.vault.on("create", async (file: TAbstractFile) => {
+				await this.fileHandler(file);
 			});
 		});
 	}
 
-	private fileHandler(file: TAbstractFile) {
+	private async weeklyRunner(file: TAbstractFile): Promise<void> {
+		let sequenceWeek: IFetchableSequence<TFile> = new DailySequence(this.app.vault, file);
+		await sequenceWeek.Populate();
+		let operationWeek: INoteOperation = new NoteOperation(
+			sequenceWeek, 
+			this.app.vault, 
+			this.app.workspace, 
+			this._heading);
+		await operationWeek.Run();
+	}
+
+	private async dailyRunner(file: TAbstractFile): Promise<void> {
+		let sequenceDaily: IFetchableSequence<TFile> = new DailySequence(this.app.vault, file);
+		await sequenceDaily.Populate();
+		let operationDaily: INoteOperation = new NoteOperation(
+			sequenceDaily, 
+			this.app.vault, 
+			this.app.workspace, 
+			this._heading);
+		await operationDaily.Run();
+	}
+
+	private async fileHandler(file: TAbstractFile): Promise<void> {
 		if (!this._coLocated) {
-			// Classical Case
 			switch (file.path) {
 				case this._dailyNoteLocation:
-					console.log("Daily Note");
+					await this.dailyRunner(file);
 					break;
 				case this._weeklyNoteLocation:
-					console.log("Weekly Note");
+					this.weeklyRunner(file);
 					break;
 				default: break;
 			}
 		} else {
-			if (file.name.includes("-w")) {
-
-			} else {
-				
+			if (file.name.includes("-w") && (file.path.includes(this._weeklyNoteLocation))) {
+				await this.weeklyRunner(file);
+			} else if (file.path.includes(this._weeklyNoteLocation)) {
+				await this.dailyRunner(file);
 			}
 		}
-
-
-		// Pathological Case
-
 	}
 
 	public async loadSettings(): Promise<void> {

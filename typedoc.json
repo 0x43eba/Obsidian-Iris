@@ -1,0 +1,4 @@
+{
+    "entryPoints": ["./Iris/source/"],
+    "out": "docs/typedoc"
+  }
