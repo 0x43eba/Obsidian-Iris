@@ -16,12 +16,12 @@ export class DailySequence implements IFetchableSequence<TFile> {
     public Populate(): void {
         this.Sequence = Array.from(this._vault.getFiles())
             .filter((entry) => entry.path.includes(this._dailyNote.Location))
-            .filter((entry) => entry.basename.localeCompare(this._dailyNote.Object.name) != 0)
+            .filter((entry) => entry.name != this._dailyNote.Object.name)
             .filter((entry) => (this.parseDate(entry.name) < this.parseDate(this._dailyNote.Object.name)));
     }
 
     public Min(): TFile {
-        if (!this.Sequence) throw new Error("Sequence Not Populated")
+        if (!this.Sequence) throw new Error("Sequence Not Populated");
         const outcomes: Array<number> = this.Sequence
             .map((entry) => this.parseDate(this._dailyNote.Object.name) - this.parseDate(entry.name));
         return this.Sequence[outcomes.indexOf(Math.min(...outcomes))];
@@ -29,14 +29,14 @@ export class DailySequence implements IFetchableSequence<TFile> {
     }
 
     public Max(): TFile {
-        if (!this.Sequence) throw new Error("Sequence Not Populated")
+        if (!this.Sequence) throw new Error("Sequence Not Populated");
         const outcomes: Array<number> = this.Sequence
             .map((entry) => this.parseDate(this._dailyNote.Object.name) - this.parseDate(entry.name));
         return this.Sequence[outcomes.indexOf(Math.max(...outcomes))];
     }
 
     public Containes(file: TFile): boolean {
-        if (!this.Sequence) throw new Error("Sequence Not Populated")
+        if (!this.Sequence) throw new Error("Sequence Not Populated");
         return (this.Sequence.indexOf(file) != -1)
     }
 
