@@ -1,4 +1,4 @@
-import { IFetchableSequence } from "Iris/source/interfaces/ISequentialFiles";
+import { IFetchableSequence } from "Iris/source/interfaces/IFetchableSequence";
 import { TFile, Vault } from "obsidian";
 
 export class WeeklySequence implements IFetchableSequence<TFile> {
@@ -40,7 +40,7 @@ export class WeeklySequence implements IFetchableSequence<TFile> {
 
     public Contains(file: TFile): boolean {
         if (!this.Sequence) throw new Error("Sequence Not Populated");
-        return (this.Sequence.indexOf(file) != -1)
+        return (this.Sequence.indexOf(file) != -1);
     }
 
 }

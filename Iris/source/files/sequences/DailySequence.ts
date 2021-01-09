@@ -1,4 +1,4 @@
-import { IFetchableSequence } from "Iris/source/interfaces/ISequentialFiles";
+import { IFetchableSequence } from "Iris/source/interfaces/IFetchableSequence";
 import { TFile, Vault } from "obsidian";
 
 export class DailySequence implements IFetchableSequence<TFile> {
@@ -25,7 +25,6 @@ export class DailySequence implements IFetchableSequence<TFile> {
         const outcomes: Array<number> = this.Sequence
             .map((entry) => this.parseDate(this._dailyNote.name) - this.parseDate(entry.name));
         return this.Sequence[outcomes.indexOf(Math.min(...outcomes))];
-
     }
 
     public Max(): TFile {
@@ -37,10 +36,10 @@ export class DailySequence implements IFetchableSequence<TFile> {
 
     public Contains(file: TFile): boolean {
         if (!this.Sequence) throw new Error("Sequence Not Populated");
-        return (this.Sequence.indexOf(file) != -1)
+        return (this.Sequence.indexOf(file) != -1);
     }
 
     private parseDate(name: string): number {
-		return (new Date(name.replace(".md", ""))).getTime()
+		return (new Date(name.replace(".md", ""))).getTime();
 	}
 }
