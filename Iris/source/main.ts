@@ -15,6 +15,7 @@ export default class MyPlugin extends Plugin {
 
 	private _dailyNoteLocation: string;
 	private _header: string;
+	
 	private async updateFile(file: TAbstractFile): Promise<void> {
 		
 		if (!file.path.includes(this._dailyNoteLocation)) return Promise.resolve();
