@@ -1,4 +1,3 @@
-import { IDescriptor } from "Iris/source/interfaces/IDescriptor";
 import { IFetchableSequence } from "Iris/source/interfaces/ISequentialFiles";
 import { TFile, Vault } from "obsidian";
 
@@ -6,17 +5,18 @@ export class WeeklySequence implements IFetchableSequence<TFile> {
     
     public Sequence: Array<TFile>;
     private _vault: Vault;
-    private _weeklyNote: IDescriptor<TFile>;
+    private _weeklyNote: TFile;
 
-    constructor(vault: Vault, weeklyNote: IDescriptor<TFile>) {
+    constructor(vault: Vault, weeklyNote: TFile) {
         this._vault = vault;
         this._weeklyNote = weeklyNote;
     }
 
     public Populate(): void {
+        if (this.Sequence) throw new Error("Sequence Already Populated");
         this.Sequence = Array.from(this._vault.getFiles())
-            .filter((entry) => entry.path.includes(this._weeklyNote.Location))
-            .filter((entry) => entry.name != this._weeklyNote.Object.name)
+            .filter((entry) => entry.path.includes(this._weeklyNote.path))
+            .filter((entry) => entry.name != this._weeklyNote.name)
             .filter((entry) => entry.name.includes("-w"));
     }
 
@@ -34,11 +34,11 @@ export class WeeklySequence implements IFetchableSequence<TFile> {
             .map((entry) => 
                 entry.name.split("-w").map( x => parseInt(x)).reduce((sum, value) => sum+value))
             .filter((x) => 
-                x < this._weeklyNote.Object.name.split("-w").map( x => parseInt(x)).reduce((sum, value) => sum+value));
+                x < this._weeklyNote.name.split("-w").map( x => parseInt(x)).reduce((sum, value) => sum+value));
         return this.Sequence[outcomes.indexOf(Math.max(...outcomes))];
     }
 
-    public Containes(file: TFile): boolean {
+    public Contains(file: TFile): boolean {
         if (!this.Sequence) throw new Error("Sequence Not Populated");
         return (this.Sequence.indexOf(file) != -1)
     }

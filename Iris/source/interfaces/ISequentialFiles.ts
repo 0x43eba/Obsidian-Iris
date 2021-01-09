@@ -5,6 +5,6 @@ export interface IFetchableSequence<T> {
     Populate(): void;
     Min(): T;
     Max(): T;
-    Containes(t: T): boolean;
+    Contains(t: T): boolean;
     
 }
