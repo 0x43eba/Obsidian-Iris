@@ -6,13 +6,17 @@ import { IFetchableSequence } from './interfaces/IFetchableSequence';
 import { INoteOperation } from './interfaces/INoteOperation'
 
 interface IIrisSettings {
-	header: string;
-	location: string,
+	headerDay: string;
+	locationDay: string;
+	headerWeek: string;
+	locationWeek: string;
 }
 
 const DEFAULT_SETTINGS: IIrisSettings = {
-	header: '### Tasks',
-	location: "Daily Notes"
+	headerDay: "#### Tasks",
+	locationDay: "Notes",
+	headerWeek: "#### Tasks",
+	locationWeek: "Notes",
 }
 
 export default class MyPlugin extends Plugin {
@@ -22,7 +26,9 @@ export default class MyPlugin extends Plugin {
 	private _dailyNoteLocation: string;
 	private _weeklyNoteLocation: string;
 	private _coLocated: boolean;
-	private _heading: string; // Clean this up
+	private _headingWeek: string;
+	private _headingDay: string;
+
 //#endregion
 
 //#region File Orchestration
@@ -32,7 +38,7 @@ export default class MyPlugin extends Plugin {
 			sequenceWeek, 
 			this.app.vault, 
 			this.app.workspace, 
-			this._heading,
+			this._headingWeek,
 			false);
 		await operationWeek.Run();
 	}
@@ -43,7 +49,7 @@ export default class MyPlugin extends Plugin {
 			sequenceDaily, 
 			this.app.vault, 
 			this.app.workspace, 
-			this._heading);
+			this._headingDay);
 		await operationDaily.Run();
 	}
 
@@ -96,9 +102,10 @@ export default class MyPlugin extends Plugin {
 		this.addSettingTab(new IrisSettings(this.app, this));
 		await this.loadSettings();
 
-		this._dailyNoteLocation = this.settings.location;
-		this._weeklyNoteLocation = this.settings.location;
-		this._heading = this.settings.header;
+		this._dailyNoteLocation = this.settings.locationWeek;
+		this._weeklyNoteLocation = this.settings.locationWeek;
+		this._headingDay = this.settings.headerDay;
+		this._headingWeek = this.settings.headerWeek;
 		this._coLocated = (this._dailyNoteLocation == this._weeklyNoteLocation);
 		
 		this.registerFileListner();
@@ -107,52 +114,87 @@ export default class MyPlugin extends Plugin {
 }
 
 class IrisSettings extends PluginSettingTab {
+
 //#region Variables
 	plugin: MyPlugin;
-	private notes: string;
-	private tasks: string;
 //#endregion
 
 
 	constructor(app: App, plugin: MyPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
-		this.notes = "";
-		this.tasks = "";
 	}
+
+//#region Daily Setting Pannels
+
+	private dailyNoteHeading(): void {
+		new Setting(this.containerEl)
+		.setName('To Do Headding')
+		.setDesc('Enter the tag above your to-do list. (IE: ### To Do).')
+		.addText(text => text
+			.setPlaceholder('### To Do')
+			.setValue(this.plugin.settings.headerDay ? this.plugin.settings.headerDay : DEFAULT_SETTINGS.headerDay)
+			.onChange(async (value) => {
+				this.plugin.settings.headerDay = value;
+				await this.plugin.saveSettings();
+			}));
+	}
+
+	private dailyNoteLocation(): void {
+		new Setting(this.containerEl)
+		.setName('Daily Note Directory')
+		.setDesc('Enter the directory you keep your Daily Notes in.')
+		.addText(text => text
+			.setPlaceholder('Daily Notes')
+			.setValue(this.plugin.settings.locationDay ? this.plugin.settings.locationDay : DEFAULT_SETTINGS.locationDay)
+			.onChange(async (value) => {
+				this.plugin.settings.locationDay = value;
+				await this.plugin.saveSettings();
+			}));
+	}
+//#endregion
+
+//#region Weekly Settings Pannels
+	private weeklyNoteHeading(): void {
+		new Setting(this.containerEl)
+		.setName('Weekly Note Heading')
+		.setDesc('Enter the tag above your to-do list. (IE: ### To Do).')
+		.addText(text => text
+			.setPlaceholder('Daily Notes')
+			.setValue(this.plugin.settings.headerWeek ? this.plugin.settings.headerWeek : DEFAULT_SETTINGS.headerWeek)
+			.onChange(async (value) => {
+				this.plugin.settings.headerWeek = value;
+				await this.plugin.saveSettings();
+			}));
+	}
+
+	private weeklyNoteLocation(): void {
+		new Setting(this.containerEl)
+		.setName('Weekly Note Directory')
+		.setDesc('Enter the directory you keep your Weekly Notes in.')
+		.addText(text => text
+			.setPlaceholder('Daily Notes')
+			.setValue(this.plugin.settings.locationWeek ? this.plugin.settings.locationWeek : DEFAULT_SETTINGS.locationWeek)
+			.onChange(async (value) => {
+				this.plugin.settings.locationWeek = value;
+				await this.plugin.saveSettings();
+			}));	
+	}
+//#endregion
 
 //#region Lifecycle
 
 	public display(): void {
-		let { containerEl } = this;
 
-		containerEl.empty();
+		this.containerEl.empty();
 
-		containerEl.createEl('h2', { text: 'Settings for Iris' });
+		this.containerEl.createEl('h2', { text: 'Settings for Iris' });
+		
+		this.dailyNoteHeading();
+		this.dailyNoteLocation();
 
-		new Setting(containerEl)
-			.setName('To Do Headding')
-			.setDesc('Enter the tag above your to-do list. (IE: ### To Do).')
-			.addText(text => text
-				.setPlaceholder('### To Do')
-				.setValue(this.plugin.settings.header ? this.plugin.settings.header : DEFAULT_SETTINGS.header)
-				.onChange(async (value) => {
-					this.plugin.settings.header = value;
-					this.tasks = value;
-					await this.plugin.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName('Daily Note Directory')
-			.setDesc('Enter the directory you keep your Daily Notes in.')
-			.addText(text => text
-				.setPlaceholder('Daily Notes')
-				.setValue(this.plugin.settings.location ? this.plugin.settings.location : DEFAULT_SETTINGS.location)
-				.onChange(async (value) => {
-					this.plugin.settings.location = value;
-					this.notes = value;
-					await this.plugin.saveSettings();
-				}));
+		this.weeklyNoteHeading();
+		this.weeklyNoteLocation();
 	}
 
 //#endregion
