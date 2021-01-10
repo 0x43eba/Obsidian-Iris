@@ -7,7 +7,7 @@
 
 Iris is a tool for rolling over your previous day's unfinished tasks. This is based on, but not a fork of [this](https://github.com/shichongrui/obsidian-rollover-daily-todos), and is designed to work with [this plugin](https://github.com/liamcain/obsidian-calendar-plugin) for managing Daily Notes and Calendar items. 
 
-![](https://github.com/OliverAndrews/Obsidian-Iris/blob/master/docs/images/Screen%20Recording%202021-01-04%20at%202.12.55%20PM.gif)
+![](https://github.com/OliverAndrews/Obsidian-Iris/blob/overhaul/basic-oop/docs/images/Screen%20Recording%202021-01-04%20at%202.12.55%20PM.gif)
 
 ### To Install
 [Click here to download latest Iris.zip](https://github.com/OliverAndrews/Obsidian-Iris/releases/tag/1.0).
