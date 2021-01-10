@@ -27,7 +27,7 @@ export class ToDoSequence implements IFetchableSequence<string> {
 				} else if (!hasSeenHeadder) continue;
 				break;
 			}
-			if (x.match(unfinishedTodosRegex)) this.Sequence.push(x); console.log(x);
+			if (x.match(unfinishedTodosRegex)) this.Sequence.push(x);
         }
     }
 
@@ -48,7 +48,6 @@ export class ToDoSequence implements IFetchableSequence<string> {
 
     public ToString(): string {
         if(this.Sequence.length == 0) throw new Error("Sequence Not Populated");
-        console.log(this.Sequence);
         return this.Sequence.join("\n");
     }
 }

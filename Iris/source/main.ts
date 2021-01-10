@@ -57,21 +57,17 @@ export default class MyPlugin extends Plugin {
 		if (!this._coLocated) {
 			switch (file.path) {
 				case this._dailyNoteLocation:
-					console.log("Day");
 					await this.dailyRunner(file);
 					break;
 				case this._weeklyNoteLocation:
-					console.log("Week");
 					await this.weeklyRunner(file);
 					break;
 				default: break;
 			}
 		} else {
-			if (file.name.includes("-w") && (file.path.includes(this._weeklyNoteLocation))) {
-				console.log("Week2");
+			if (file.name.includes("-w") && (file.path.replace(`/${file.name}`, "") == this._weeklyNoteLocation)) {
 				await this.weeklyRunner(file);
-			} else if (file.path.includes(this._weeklyNoteLocation)) {
-				console.log("Day2");
+			} else if (file.path.replace(`/${file.name}`, "") == this._weeklyNoteLocation) {
 				await this.dailyRunner(file);
 			}
 		}

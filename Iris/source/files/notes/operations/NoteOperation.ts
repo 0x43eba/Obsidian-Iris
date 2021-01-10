@@ -31,8 +31,6 @@ export class NoteOperation implements INoteOperation {
         let file: TFile = this._workspace.getActiveFile();
         let fileText: string = await this._vault.read(file);
         let updatedText: string =  fileText.replace(this._header, `${this._header}\n${section}`);
-        console.log(previous);
-        console.log(updatedText);
         await this._vault.modify(file, updatedText);
     }
     
