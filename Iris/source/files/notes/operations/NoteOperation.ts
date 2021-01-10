@@ -9,11 +9,12 @@ export class NoteOperation implements INoteOperation {
     private _vault: Vault;
     private _workspace: Workspace;
     private _header: string;
+    private _min: boolean;
 
     constructor(
         sequence: IFetchableSequence<TFile>, 
         vault: Vault, workspace: Workspace, 
-        header: string) {
+        header: string, min: boolean = true) {
             this._sequence = sequence;
             this._header = header;
             this._vault = vault;
@@ -22,7 +23,7 @@ export class NoteOperation implements INoteOperation {
 
     public async Run(): Promise<void> {
         await this._sequence.Populate();
-        let previous: string = await this._vault.read(this._sequence.Min());
+        let previous: string = await this._vault.read(this._min ? this._sequence.Min() : this._sequence.Max());
         let todo: ToDoSequence = new ToDoSequence(previous, this._header);
         await todo.Populate();
         let section: string = todo.ToString();

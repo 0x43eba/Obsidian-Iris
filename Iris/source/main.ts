@@ -25,33 +25,15 @@ export default class MyPlugin extends Plugin {
 	private _heading: string; // Clean this up
 //#endregion
 
-	public async onload(): Promise<void> {
-		this.addSettingTab(new IrisSettings(this.app, this));
-		await this.loadSettings();
-
-		this._dailyNoteLocation = this.settings.location;
-		this._weeklyNoteLocation = this.settings.location;
-		this._heading = this.settings.header;
-		this._coLocated = (this._dailyNoteLocation == this._weeklyNoteLocation);
-		
-		this.registerFileListner();
-	}
-
-	private registerFileListner() {
-		this.app.workspace.on("layout-ready", () => {
-			this.app.vault.on("create", async (file: TAbstractFile) => {
-				await this.fileHandler(file);
-			});
-		});
-	}
-
+//#region File Orchestration
 	private async weeklyRunner(file: TAbstractFile): Promise<void> {
 		let sequenceWeek: IFetchableSequence<TFile> = new WeeklySequence(this.app.vault, file, this._weeklyNoteLocation);
 		let operationWeek: INoteOperation = new NoteOperation(
 			sequenceWeek, 
 			this.app.vault, 
 			this.app.workspace, 
-			this._heading);
+			this._heading,
+			false);
 		await operationWeek.Run();
 	}
 
@@ -88,6 +70,9 @@ export default class MyPlugin extends Plugin {
 			}
 		}
 	}
+//#endregion
+
+//#region Setup
 
 	public async loadSettings(): Promise<void> {
 		this.settings = Object.assign(DEFAULT_SETTINGS, await this.loadData());
@@ -96,12 +81,38 @@ export default class MyPlugin extends Plugin {
 	public async saveSettings(): Promise<void> {
 		await this.saveData(this.settings);
 	}
+
+	private registerFileListner() {
+		this.app.workspace.on("layout-ready", () => {
+			this.app.vault.on("create", async (file: TAbstractFile) => {
+				await this.fileHandler(file);
+			});
+		});
+	}
+//#endregion
+
+//#region Lifecycle
+	public async onload(): Promise<void> {
+		this.addSettingTab(new IrisSettings(this.app, this));
+		await this.loadSettings();
+
+		this._dailyNoteLocation = this.settings.location;
+		this._weeklyNoteLocation = this.settings.location;
+		this._heading = this.settings.header;
+		this._coLocated = (this._dailyNoteLocation == this._weeklyNoteLocation);
+		
+		this.registerFileListner();
+	}
+//#endregion
 }
 
 class IrisSettings extends PluginSettingTab {
+//#region Variables
 	plugin: MyPlugin;
 	private notes: string;
 	private tasks: string;
+//#endregion
+
 
 	constructor(app: App, plugin: MyPlugin) {
 		super(app, plugin);
@@ -109,6 +120,8 @@ class IrisSettings extends PluginSettingTab {
 		this.notes = "";
 		this.tasks = "";
 	}
+
+//#region Lifecycle
 
 	public display(): void {
 		let { containerEl } = this;
@@ -140,6 +153,7 @@ class IrisSettings extends PluginSettingTab {
 					this.notes = value;
 					await this.plugin.saveSettings();
 				}));
-
 	}
+
+//#endregion
 }
