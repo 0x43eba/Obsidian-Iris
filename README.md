@@ -1,13 +1,16 @@
 # Obsidian Iris
 
-### Version 1.1.0
+### Version 1.9.9 - (2.0.0 PreRelease source)
 
-- Includes support for nested to do items.
-- Fixed issue with unwanted to do items being transfered. 
+Features Supported:
+
+- Nested To Do items.
+- Stronger file verification.
+- Weekly Note rollover.
 
 Iris is a tool for rolling over your previous day's unfinished tasks. This is based on, but not a fork of [this](https://github.com/shichongrui/obsidian-rollover-daily-todos), and is designed to work with [this plugin](https://github.com/liamcain/obsidian-calendar-plugin) for managing Daily Notes and Calendar items. 
 
-![](https://github.com/OliverAndrews/Obsidian-Iris/blob/master/Screen%20Recording%202021-01-04%20at%202.12.55%20PM.gif)
+![](https://github.com/OliverAndrews/Obsidian-Iris/blob/overhaul/basic-oop/docs/images/Screen%20Recording%202021-01-04%20at%202.12.55%20PM.gif)
 
 ### To Install
 [Click here to download latest Iris.zip](https://github.com/OliverAndrews/Obsidian-Iris/releases/tag/1.0).
@@ -34,7 +37,7 @@ Iris uses the filename of your daily note as a way to determine which other note
 
 ### Notes to Developers
 
-If you would like to build from source, you can clone this directory, and run `npm install` within the repository. To run the TypeScript compiler in watch mode, run `npm run dev`
+If you would like to build from source, you can clone this directory, and run `npm install` within the repository. To run the TypeScript compiler in watch mode, run `npm run dev`. If you would like to build the documentation, run `npm run doc`. NOTE: This is developers documentation on code and won't tell you how Iris does work. Once you're done, to build for production, use `npm run build-prod`. To *just* build the main.ts file, use `npm run build`. Once you build, move build folder to plugins directory.
 
 ### Bug Reports and Feature Requests
 
