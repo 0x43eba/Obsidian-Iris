@@ -19,6 +19,7 @@ export class NoteOperation implements INoteOperation {
             this._header = header;
             this._vault = vault;
             this._workspace = workspace;
+            this._min = min;
     }
 
     public async Run(): Promise<void> {
