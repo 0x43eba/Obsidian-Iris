@@ -34,7 +34,7 @@ Iris uses the filename of your daily note as a way to determine which other note
 
 ### Notes to Developers
 
-If you would like to build from source, you can clone this directory, and run `npm install` within the repository. To run the TypeScript compiler in watch mode, run `npm run dev`
+If you would like to build from source, you can clone this directory, and run `npm install` within the repository. To run the TypeScript compiler in watch mode, run `npm run dev`. If you would like to build the documentation, run `npm run doc`. NOTE: This is developers documentation on code and won't tell you how Iris does work. Once you're done, to build for production, use `npm run build-prod`. To *just* build the main.ts file, use `npm run build`. Once you build, move build folder to plugins directory.
 
 ### Bug Reports and Feature Requests
 

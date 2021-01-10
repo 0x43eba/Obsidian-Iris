@@ -21,13 +21,17 @@ export class NoteOperation implements INoteOperation {
     }
 
     public async Run(): Promise<void> {
-        this._sequence.Populate();
+        await this._sequence.Populate();
         let previous: string = await this._vault.read(this._sequence.Min());
         let todo: ToDoSequence = new ToDoSequence(previous, this._header);
-        todo.Populate();
+        await todo.Populate();
         let section: string = todo.ToString();
-        let updatedText: string =  previous.replace(this._header, `${this._header}\n${section}`);
-        await this._vault.modify(this._workspace.getActiveFile(), updatedText);
+        let file: TFile = this._workspace.getActiveFile();
+        let fileText: string = await this._vault.read(file);
+        let updatedText: string =  fileText.replace(this._header, `${this._header}\n${section}`);
+        console.log(previous);
+        console.log(updatedText);
+        await this._vault.modify(file, updatedText);
     }
     
 }

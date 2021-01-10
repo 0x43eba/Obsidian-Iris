@@ -13,7 +13,7 @@ export class ToDoSequence implements IFetchableSequence<string> {
     }
     
     public Populate(): void {
-        if (this.Sequence) throw new Error("Sequence Already Populated");
+        if (this.Sequence.length != 0) throw new Error("Sequence Already Populated");
 
 		const unfinishedTodosRegex: RegExp = /- \[ \].*/g;
 		const listedText: Array<string> = Array.from(this._dailyNote.split("\n"));
@@ -27,28 +27,28 @@ export class ToDoSequence implements IFetchableSequence<string> {
 				} else if (!hasSeenHeadder) continue;
 				break;
 			}
-			if (x.match(unfinishedTodosRegex)) this.Sequence.push(x);
+			if (x.match(unfinishedTodosRegex)) this.Sequence.push(x); console.log(x);
         }
-        
-        throw new Error("Method not implemented.");
     }
 
     public Min(): string {
-        if (!this.Sequence) throw new Error("Sequence Not Populated");
+        if (this.Sequence.length == 0) throw new Error("Sequence Not Populated");
         throw new Error("Method not implemented.");
     }
 
     public Max(): string {
-        if (!this.Sequence) throw new Error("Sequence Not Populated");
+        if (this.Sequence.length == 0) throw new Error("Sequence Not Populated");
         throw new Error("Method not implemented.");
     }
 
     public Contains(task: string): boolean {
-        if (!this.Sequence) throw new Error("Sequence Not Populated");
+        if(this.Sequence.length == 0) throw new Error("Sequence Not Populated");
         return this.Sequence.contains(task);
     }
 
     public ToString(): string {
+        if(this.Sequence.length == 0) throw new Error("Sequence Not Populated");
+        console.log(this.Sequence);
         return this.Sequence.join("\n");
     }
 }
