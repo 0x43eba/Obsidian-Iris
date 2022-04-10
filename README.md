@@ -21,11 +21,11 @@ Make a folder inside Vault/.obsidian/plugins called Iris. Put the contents of Ir
 
 Once you have installed, and set it up, close Obsidian and then reopen the program to make it work.
 
-This plugin requires you to have a daily notes system set up using [this plugin](https://github.com/liamcain/obsidian-calendar-plugin). To create a new daily note select the calendar day that you would like to create a note for. Using the sidebar's Daily Notes button will not cause notes to roll over, thought this limitation will be removed in the future.
+This plugin requires you to have a daily notes system set up using [this plugin](https://github.com/liamcain/obsidian-calendar-plugin). To create a new daily note select the calendar day that you would like to create a note for. Using the sidebar's Daily Notes button will not cause notes to roll over.
 
 ### Filenames
 
-Iris uses the filename of your daily note as a way to determine which other note's TO DO list it will import. Because of this, the title has to be clearly formatted and look like this: `Sunday Jan 03, 2021`. This only affects filenames. Headings and other anchors are unaffected. Anyone who's coming from [obsidian-rollover-daily-todos](https://github.com/shichongrui/obsidian-rollover-daily-todos) doesn't have to make any changes and Iris is fully compatible with this plugin. I am looking into solutions to this restriction.
+Iris uses the filename of your daily note as a way to determine which other note's TO DO list it will import. Because of this, the title has to be clearly formatted and look like this: `Sunday Jan 03, 2021`. This only affects filenames. Headings and other anchors are unaffected. Anyone who's coming from [obsidian-rollover-daily-todos](https://github.com/shichongrui/obsidian-rollover-daily-todos) doesn't have to make any changes and Iris is fully compatible with this plugin.
 
 ### Setting Up
 
@@ -37,12 +37,8 @@ Iris uses the filename of your daily note as a way to determine which other note
 
 ### Notes to Developers
 
-If you would like to build from source, you can clone this directory, and run `npm install` within the repository. To run the TypeScript compiler in watch mode, run `npm run dev`. If you would like to build the documentation, run `npm run doc`. NOTE: This is developers documentation on code and won't tell you how Iris does work. Once you're done, to build for production, use `npm run build-prod`. To *just* build the main.ts file, use `npm run build`. Once you build, move build folder to plugins directory.
+If you would like to build from source, you can clone this directory, and run `npm install` within the repository. To run the TypeScript compiler in watch mode, run `npm run dev`. If you would like to build the documentation, run `npm run doc`. NOTE: This is developers documentation on code and won't tell you how Iris works. Once you're done, to build for production, use `npm run build-prod`. To *just* build the main.ts file, use `npm run build`. Once you build, move build folder to plugins directory.
 
 ### Bug Reports and Feature Requests
 
 If you detect a bug in Iris, please open a new issue on this project. You may also open feature requests with issues, however implementation of feature requests is not guaranteed.
-
-### Upcoming inclusion in Community Plugins
-
-Inclusion in Obsidian Community Plugins is planned for some time in the future, pending QA testing.
